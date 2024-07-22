@@ -8,8 +8,8 @@ pipeline {
         DOCKER_REPO = 'https://github.com/byungju-oh/shop.git'
         MANIFEST_REPO = 'https://github.com/byungju-oh/argojenkins.git'
         GIT_BRANCH = 'main'
-        VERSION_FILE = 'argojenkins/was/version.txt'
-        MANIFEST_FILE = 'argojenkins/was/dep.yaml'
+        VERSION_FILE = 'was/version.txt'
+        MANIFEST_FILE = 'was/dep.yaml'
     }
 
     stages {
@@ -34,11 +34,13 @@ pipeline {
 
         stage('Read Version') {
             steps {
-                script {
-                    def version = readFile("${VERSION_FILE}").trim()
-                    def newVersion = version.tokenize('.').with { it[-1] = (it[-1] as int) + 1; it.join('.') }
-                    env.IMAGE_VERSION = newVersion
-                    echo "New version: ${newVersion}"
+                dir('argojenkins') {
+                    script {
+                        def version = readFile("${VERSION_FILE}").trim()
+                        def newVersion = version.tokenize('.').with { it[-1] = (it[-1] as int) + 1; it.join('.') }
+                        env.IMAGE_VERSION = newVersion
+                        echo "New version: ${newVersion}"
+                    }
                 }
             }
         }
