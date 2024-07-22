@@ -75,12 +75,13 @@ pipeline {
                     }
                     withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GITHUB_PSW', usernameVariable: 'GITHUB_USR')]) {
                         script {
+                            def encodedUser = URLEncoder.encode("${GITHUB_USR}", "UTF-8")
                             sh """
                                 git config user.email "jenkins@yourdomain.com"
                                 git config user.name "Jenkins"
                                 git add ${MANIFEST_FILE}
                                 git commit -m "Update image version to ${env.IMAGE_VERSION}"
-                                git push https://${GITHUB_USR}:${GITHUB_PSW}@github.com/byungju-oh/argojenkins.git ${GIT_BRANCH}
+                                git push https://${encodedUser}:${GITHUB_PSW}@github.com/byungju-oh/argojenkins.git ${GIT_BRANCH}
                             """
                         }
                     }
@@ -98,12 +99,13 @@ pipeline {
                     }
                     withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GITHUB_PSW', usernameVariable: 'GITHUB_USR')]) {
                         script {
+                            def encodedUser = URLEncoder.encode("${GITHUB_USR}", "UTF-8")
                             sh """
                                 git config user.email "jenkins@yourdomain.com"
                                 git config user.name "Jenkins"
                                 git add ${VERSION_FILE}
                                 git commit -m "Update version to ${env.IMAGE_VERSION}"
-                                git push https://${GITHUB_USR}:${GITHUB_PSW}@github.com/byungju-oh/argojenkins.git ${GIT_BRANCH}
+                                git push https://${encodedUser}:${GITHUB_PSW}@github.com/byungju-oh/argojenkins.git ${GIT_BRANCH}
                             """
                         }
                     }
