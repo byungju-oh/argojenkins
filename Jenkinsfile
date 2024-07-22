@@ -72,13 +72,17 @@ pipeline {
                         sh """
                             sed -i 's|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${env.IMAGE_VERSION}|' ${MANIFEST_FILE}
                         """
-                        sh """
-                            git config user.email "jenkins@yourdomain.com"
-                            git config user.name "Jenkins"
-                            git add ${MANIFEST_FILE}
-                            git commit -m "Update image version to ${env.IMAGE_VERSION}"
-                            git push https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@${MANIFEST_REPO.replace('https://', '')} ${GIT_BRANCH}
-                        """
+                    }
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GITHUB_PSW', usernameVariable: 'GITHUB_USR')]) {
+                        script {
+                            sh """
+                                git config user.email "jenkins@yourdomain.com"
+                                git config user.name "Jenkins"
+                                git add ${MANIFEST_FILE}
+                                git commit -m "Update image version to ${env.IMAGE_VERSION}"
+                                git push https://${GITHUB_USR}:${GITHUB_PSW}@github.com/byungju-oh/argojenkins.git ${GIT_BRANCH}
+                            """
+                        }
                     }
                 }
             }
@@ -90,12 +94,18 @@ pipeline {
                     script {
                         sh """
                             echo ${env.IMAGE_VERSION} > ${VERSION_FILE}
-                            git config user.email "jenkins@yourdomain.com"
-                            git config user.name "Jenkins"
-                            git add ${VERSION_FILE}
-                            git commit -m "Update version to ${env.IMAGE_VERSION}"
-                            git push https://${GITHUB_CREDENTIALS_USR}:${GITHUB_CREDENTIALS_PSW}@${MANIFEST_REPO.replace('https://', '')} ${GIT_BRANCH}
                         """
+                    }
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', passwordVariable: 'GITHUB_PSW', usernameVariable: 'GITHUB_USR')]) {
+                        script {
+                            sh """
+                                git config user.email "jenkins@yourdomain.com"
+                                git config user.name "Jenkins"
+                                git add ${VERSION_FILE}
+                                git commit -m "Update version to ${env.IMAGE_VERSION}"
+                                git push https://${GITHUB_USR}:${GITHUB_PSW}@github.com/byungju-oh/argojenkins.git ${GIT_BRANCH}
+                            """
+                        }
                     }
                 }
             }
