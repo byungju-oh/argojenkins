@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-proxy-service
+  labels:
+    app: nginx-proxy
+spec:
+  selector:
+    app: nginx-proxy
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer

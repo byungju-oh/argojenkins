@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+type: Opaque
+data:
+  database_uri: bXlzcWwrbXlzcWxjb25uZWN0b3I6Ly91YnVudHU6MTIzNEAxMC4xMjguMTUuMjIwL2RiYQ==
+  secret_key: c2VjcmV0X2tleQ==
+  GCS_BUCKET_NAME: c2hvcGlt
