@@ -8,8 +8,8 @@ pipeline {
         DOCKER_REPO = 'https://github.com/byungju-oh/shop.git'
         MANIFEST_REPO = 'https://github.com/byungju-oh/argojenkins.git'
         GIT_BRANCH = 'main'
-        VERSION_FILE = 'was/version.txt'
-        MANIFEST_FILE = 'was/dep.yaml'
+        VERSION_FILE = 'argojenkins/was/version.txt'
+        MANIFEST_FILE = 'argojenkins/was/dep.yaml'
     }
 
     stages {
