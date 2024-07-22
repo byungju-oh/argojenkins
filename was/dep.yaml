@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: flask-app
-        image: qudwndh/jente:1.3
+        image: qudwndh/jente:1.4
         ports:
         - containerPort: 5000
         env:
