@@ -125,3 +125,4 @@ pipeline {
             slackSend (channel: '#test-w0a3644', color: 'danger', message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.")
         }
     }
+}
