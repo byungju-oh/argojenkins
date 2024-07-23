@@ -118,11 +118,5 @@ pipeline {
         always {
             cleanWs()
         }
-        success {
-            slackSend (channel: '#test', color: 'good', message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.")
-        }
-        failure {
-            slackSend (channel: '#test', color: 'danger', message: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.")
-        }
     }
 }
