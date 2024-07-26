@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: celery
-        image: qudwndh/jente:1.20 # Flask 애플리케이션과 동일한 이미지 사용
+        image: qudwndh/jente:1.21 # Flask 애플리케이션과 동일한 이미지 사용
         command: ["celery", "-A", "app.celery", "worker", "--loglevel=info"]
         env:
         - name: DATABASE_URI
