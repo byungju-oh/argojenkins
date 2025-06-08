@@ -1,233 +1,251 @@
-# Flask Shop Application with CI/CD Pipeline
+물론입니다! 아래는 위의 내용을 한국어로 번역한 버전입니다.
 
-A containerized Flask e-commerce application with automated CI/CD pipeline using Jenkins and ArgoCD, deployed on Kubernetes.
+---
 
-## 🏗️ Architecture
+# Flask 쇼핑몰 애플리케이션 with CI/CD 파이프라인
 
-This project implements a microservices architecture with the following components:
+컨테이너화된 Flask 전자상거래 애플리케이션을 Jenkins와 ArgoCD를 이용한 자동화된 CI/CD 파이프라인으로 쿠버네티스 환경에 배포합니다.
 
-- **Frontend**: Nginx reverse proxy
-- **Backend**: Flask application with Celery for background tasks
-- **Cache/Message Broker**: Redis
-- **Database**: MySQL
-- **Storage**: Google Cloud Storage (GCS)
-- **CI/CD**: Jenkins + ArgoCD (GitOps)
+## 🏗️ 아키텍처
 
-## 📋 Prerequisites
+이 프로젝트는 다음과 같은 구성 요소로 구성된 마이크로서비스 아키텍처를 구현합니다:
 
-- Kubernetes cluster
-- Docker Hub account
-- GitHub repositories (source code + manifest repository)
-- Jenkins with required plugins
-- ArgoCD installed on Kubernetes
-- Google Cloud credentials for GCS
+* **프론트엔드**: Nginx 리버스 프록시
+* **백엔드**: Flask 애플리케이션 (백그라운드 작업을 위한 Celery 포함)
+* **캐시/메시지 브로커**: Redis
+* **데이터베이스**: MySQL
+* **스토리지**: Google Cloud Storage (GCS)
+* **CI/CD**: Jenkins + ArgoCD (GitOps 방식)
 
-## 🚀 Quick Start
+## 📋 사전 준비사항
 
-### 1. Clone Repositories
+* 쿠버네티스 클러스터
+* Docker Hub 계정
+* GitHub 저장소 (소스 코드용 + 매니페스트용)
+* Jenkins 설치 및 필수 플러그인 구성
+* 쿠버네티스 클러스터에 ArgoCD 설치
+* GCS 사용을 위한 Google Cloud 자격 증명
+
+## 🚀 빠른 시작
+
+### 1. 저장소 클론
 
 ```bash
-# Application source code
+# 애플리케이션 소스 코드
 git clone https://github.com/byungju-oh/shop.git
 
-# Kubernetes manifests (this repository)
+# Kubernetes 매니페스트 (이 저장소)
 git clone https://github.com/byungju-oh/argojenkins.git
 ```
 
-### 2. Configure Secrets
+### 2. 시크릿 설정
 
-Create the required Kubernetes secrets:
+필요한 쿠버네티스 시크릿을 생성합니다:
 
 ```bash
-# MySQL and application secrets
+# MySQL 및 애플리케이션 시크릿
 kubectl apply -f was/sec.yaml
 
-# Google Cloud credentials
+# GCS 자격 증명 시크릿
 kubectl create secret generic google-credentials \
   --from-file=google-credentials.json=/path/to/your/gcs-credentials.json
 ```
 
-### 3. Deploy with ArgoCD
+### 3. ArgoCD로 배포
 
 ```bash
-# Apply ArgoCD application
+# ArgoCD 애플리케이션 매니페스트 적용
 kubectl apply -f application.yaml
 ```
 
-## 📁 Project Structure
+## 📁 프로젝트 구조
 
 ```
 ├── nginx/
-│   ├── dep.yaml          # Nginx deployment and ConfigMap
-│   └── ser.yaml          # Nginx service
+│   ├── dep.yaml          # Nginx 배포 및 ConfigMap
+│   └── ser.yaml          # Nginx 서비스
 ├── was/
-│   ├── dep.yaml          # Flask application deployment and service
-│   ├── redis.yaml        # Redis deployment and service
-│   ├── celery.yaml       # Celery worker deployment
-│   ├── sec.yaml          # Secrets configuration
-│   └── version.txt       # Current application version
-├── Jenkinsfile           # CI/CD pipeline configuration
-├── Jenkinsfile.back      # Backup pipeline configuration
-└── application.yaml      # ArgoCD application definition
+│   ├── dep.yaml          # Flask 애플리케이션 배포 및 서비스
+│   ├── redis.yaml        # Redis 배포 및 서비스
+│   ├── celery.yaml       # Celery 워커 배포
+│   ├── sec.yaml          # 시크릿 구성
+│   └── version.txt       # 현재 애플리케이션 버전
+├── Jenkinsfile           # CI/CD 파이프라인 설정
+├── Jenkinsfile.back      # 백업 파이프라인 구성
+└── application.yaml      # ArgoCD 애플리케이션 정의
 ```
 
-## 🔧 Configuration
+## 🔧 설정 정보
 
-### Environment Variables
+### 환경 변수
 
-The Flask application uses the following environment variables:
+Flask 애플리케이션에서 사용하는 주요 환경 변수는 다음과 같습니다:
 
-- `DATABASE_URI`: MySQL connection string
-- `SECRET_KEY`: Flask secret key
-- `GCS_BUCKET_NAME`: Google Cloud Storage bucket name
-- `GOOGLE_APPLICATION_CREDENTIALS`: Path to GCS credentials
-- `CELERY_BROKER_URL`: Redis URL for Celery broker
-- `CELERY_RESULT_BACKEND`: Redis URL for Celery results
+* `DATABASE_URI`: MySQL 접속 문자열
+* `SECRET_KEY`: Flask 시크릿 키
+* `GCS_BUCKET_NAME`: GCS 버킷 이름
+* `GOOGLE_APPLICATION_CREDENTIALS`: GCS 자격 증명 경로
+* `CELERY_BROKER_URL`: Celery 브로커용 Redis URL
+* `CELERY_RESULT_BACKEND`: Celery 결과 백엔드 Redis URL
 
-### Resource Limits
+### 리소스 제한
 
-#### Flask Application
-- **Requests**: 250Mi memory, 210m CPU
-- **Limits**: 280Mi memory, 220m CPU
+#### Flask 애플리케이션
+
+* **요청값**: 250Mi 메모리, 210m CPU
+* **제한값**: 280Mi 메모리, 220m CPU
 
 #### Nginx
-- **Requests**: 64Mi memory, 250m CPU
-- **Limits**: 128Mi memory, 500m CPU
 
-#### Celery Worker
-- **Requests**: 250Mi memory, 210m CPU
-- **Limits**: 280Mi memory, 220m CPU
+* **요청값**: 64Mi 메모리, 250m CPU
+* **제한값**: 128Mi 메모리, 500m CPU
 
-## 🔄 CI/CD Pipeline
+#### Celery 워커
 
-The Jenkins pipeline automates the following process:
+* **요청값**: 250Mi 메모리, 210m CPU
+* **제한값**: 280Mi 메모리, 220m CPU
 
-1. **Clone Repositories**: Fetches source code and manifests
-2. **Version Management**: Automatically increments version numbers
-3. **Build**: Creates Docker image with new version tag
-4. **Push**: Uploads image to Docker Hub
-5. **Update Manifests**: Updates Kubernetes manifests with new image version
-6. **GitOps**: Commits changes to trigger ArgoCD sync
-7. **Notifications**: Sends Slack notifications on success/failure
+## 🔄 CI/CD 파이프라인
 
-### Pipeline Triggers
+Jenkins 파이프라인은 아래의 작업을 자동화합니다:
 
-The pipeline can be triggered by:
-- Git webhook on source code changes
-- Manual execution
-- Scheduled builds
+1. **저장소 클론**: 소스 코드 및 매니페스트 가져오기
+2. **버전 관리**: 버전 자동 증가
+3. **빌드**: 새로운 버전 태그로 Docker 이미지 생성
+4. **푸시**: Docker Hub로 이미지 푸시
+5. **매니페스트 업데이트**: 새로운 이미지 버전으로 Kubernetes 매니페스트 수정
+6. **GitOps 배포**: 변경 커밋 → ArgoCD 자동 동기화 트리거
+7. **슬랙 알림**: 빌드 성공/실패 시 알림 전송
 
-## 🎯 Features
+### 파이프라인 트리거
 
-### Application Features
-- E-commerce functionality
-- Background task processing with Celery
-- File storage integration with Google Cloud Storage
-- Health checks and monitoring
-- Horizontal scaling ready
+파이프라인은 다음과 같은 방법으로 실행할 수 있습니다:
 
-### DevOps Features
-- **GitOps**: ArgoCD manages deployments
-- **Automated Versioning**: Semantic version management
-- **Health Monitoring**: Liveness and readiness probes
-- **Load Balancing**: Internal load balancer configuration
-- **Secrets Management**: Kubernetes secrets for sensitive data
+* Git 웹훅 (소스 코드 변경 시)
+* 수동 실행
+* 스케줄 기반 빌드
 
-## 🔍 Monitoring & Health Checks
+## 🎯 주요 기능
 
-### Health Endpoints
-- **Liveness Probe**: `GET /` (port 5000)
-- **Readiness Probe**: `GET /` (port 5000)
+### 애플리케이션 기능
 
-### Probe Configuration
-- **Initial Delay**: 30 seconds (Flask), 5 seconds (Nginx)
-- **Period**: 10 seconds
-- **Timeout**: Default (1 second)
+* 전자상거래 기능 구현
+* Celery를 통한 비동기 작업 처리
+* GCS를 활용한 파일 저장 기능
+* 헬스 체크 및 모니터링 기능
+* 수평 확장 준비 완료
 
-## 🌐 Network Configuration
+### DevOps 기능
 
-### Services
-- **Nginx**: LoadBalancer service on port 80
-- **Flask**: Internal LoadBalancer (10.178.0.100:80)
-- **Redis**: ClusterIP service on port 6379
+* **GitOps**: ArgoCD를 통한 배포 관리
+* **자동 버전 관리**: Semantic 버전 자동 처리
+* **헬스 모니터링**: Liveness/Readiness probe 설정
+* **로드 밸런싱**: 내부 로드 밸런서 구성
+* **시크릿 관리**: Kubernetes 시크릿을 통한 민감 정보 보호
 
-### DNS Configuration
-- Custom DNS policy with ndots=2 for cluster-first resolution
+## 🔍 모니터링 및 헬스 체크
 
-## 🚨 Troubleshooting
+### 헬스 엔드포인트
 
-### Common Issues
+* **Liveness Probe**: `GET /` (포트 5000)
+* **Readiness Probe**: `GET /` (포트 5000)
 
-1. **Image Pull Errors**
+### Probe 설정
+
+* **초기 지연**: Flask 30초, Nginx 5초
+* **주기**: 10초
+* **타임아웃**: 기본값 (1초)
+
+## 🌐 네트워크 구성
+
+### 서비스 설정
+
+* **Nginx**: 외부 노출용 LoadBalancer (포트 80)
+* **Flask**: 내부 LoadBalancer (예: 10.178.0.100:80)
+* **Redis**: ClusterIP (포트 6379)
+
+### DNS 설정
+
+* `ndots=2` 설정을 활용한 클러스터 우선 네임 리졸빙
+
+## 🚨 문제 해결
+
+### 자주 발생하는 문제
+
+1. **이미지 풀 오류**
+
    ```bash
    kubectl describe pod <pod-name>
-   # Check if image exists in Docker Hub
+   # Docker Hub에 이미지 존재 여부 확인
    ```
 
-2. **Secret Mount Issues**
+2. **시크릿 마운트 오류**
+
    ```bash
    kubectl get secrets
    kubectl describe secret mysql-secret
    ```
 
-3. **Service Connection Issues**
+3. **서비스 연결 오류**
+
    ```bash
    kubectl get services
    kubectl get endpoints
    ```
 
-### Logs
+### 로그 확인
+
 ```bash
-# Flask application logs
+# Flask 애플리케이션 로그
 kubectl logs -f deployment/flask-app
 
-# Celery worker logs
+# Celery 워커 로그
 kubectl logs -f deployment/celery
 
-# Nginx logs
+# Nginx 로그
 kubectl logs -f deployment/nginx-proxy
 ```
 
-## 📈 Scaling
+## 📈 확장
 
-### Horizontal Scaling
+### 수평 확장
+
 ```bash
-# Scale Flask application
+# Flask 애플리케이션 확장
 kubectl scale deployment flask-app --replicas=3
 
-# Scale Celery workers
+# Celery 워커 확장
 kubectl scale deployment celery --replicas=2
 ```
 
-### Vertical Scaling
-Modify resource requests/limits in the respective deployment YAML files.
+### 수직 확장
 
-## 🔐 Security
+각 배포 YAML 파일에서 리소스 요청/제한 값을 수정
 
-- Secrets are base64 encoded and stored in Kubernetes secrets
-- Google Cloud credentials are mounted as files
-- Internal load balancer for Flask application
-- No root privileges for containers
+## 🔐 보안
 
-## 🤝 Contributing
+* 시크릿은 base64로 인코딩되어 Kubernetes 시크릿에 저장
+* GCS 자격 증명은 파일로 마운트됨
+* Flask는 내부 로드 밸런서를 통해 외부 접근 차단
+* 컨테이너는 루트 권한 없이 실행
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+## 🤝 기여 방법
 
-## 📄 License
+1. 저장소 포크
+2. 기능 브랜치 생성
+3. 변경 사항 반영
+4. 충분한 테스트
+5. Pull Request 생성
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 📄 라이선스
 
-## 📞 Support
+이 프로젝트는 MIT 라이선스를 따릅니다. 자세한 내용은 LICENSE 파일을 참고하세요.
 
-For issues and questions:
-- Create an issue in this repository
-- Check the troubleshooting section
-- Review application logs
+## 📞 지원
 
----
+문제 발생 시 다음 방법을 이용하세요:
 
-**Current Version**: 1.21
+* 저장소에 이슈 등록
+* 문제 해결 섹션 확인
+* 애플리케이션 로그 확인
+
